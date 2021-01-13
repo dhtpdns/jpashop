@@ -1,19 +1,25 @@
+server:
+  port : 9080
 spring:
   datasource:
-              url: jdbc:h2:tcp://localhost/~/jpashop;
-              username: sa
-              password:
-              driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/jpashop;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    #driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+
+
   jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
       hibernate:
-                ddl-auto: create
-                properties:
-                            hibernate:
-                                      #show_sql: true
-                                      format_sql: true
+        #show_sql: true
+        format_sql: true
   thymeleaf:
-            prefix: classpath:/templates/
-            suffix: .html
+    prefix: classpath:/templates/
+    suffix: .html
+
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
