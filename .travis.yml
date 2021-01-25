@@ -3,6 +3,9 @@ jdk:
   - openjdk8
 #  - openjdk11
 #  - oraclejdk11
+
+sudo: required
+
 branches:
   only:
     - master
