@@ -14,7 +14,6 @@ spring:
     #username: sa
     #password:
 
-
   jpa:
     hibernate:
       ddl-auto: none
@@ -30,6 +29,8 @@ spring:
     suffix: .html
 
 logging:
+  file: /usr/local/logs
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+    com.jpabook.jpashop: info
