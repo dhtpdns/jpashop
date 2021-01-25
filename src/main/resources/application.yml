@@ -29,7 +29,7 @@ spring:
     suffix: .html
 
 logging:
-  file: /usr/local/logs
+  file: /logs/jpashop/log
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
