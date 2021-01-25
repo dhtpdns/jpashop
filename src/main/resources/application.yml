@@ -1,12 +1,18 @@
 server:
-  port : 9080
+  port : 8080
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/jpashop;
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    #url: jdbc:h2:tcp://localhost/~/jpashop
+    #url: jdbc:oracle:thin:@database-1.ciigbogjzvga.us-east-2.rds.amazonaws.com:1521:ORCL
+    url: jdbc:mysql://database-2.ciigbogjzvga.us-east-2.rds.amazonaws.com:3306/ose?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: ose
+    password: 525srdog525!
+    #driver-class-name: oracle.jdbc.driver.OracleDriver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     #driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    #driver-class-name: org.h2.Driver
+    #username: sa
+    #password:
 
 
   jpa:
@@ -16,10 +22,14 @@ spring:
       hibernate:
         #show_sql: true
         format_sql: true
+        default_batch_fetch_size: 1000
+    #database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
 
-logging.level:
-  org.hibernate.SQL: debug
-  org.hibernate.type: trace
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace

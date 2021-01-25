@@ -1,8 +1,10 @@
 package jpabook.jpashop.repository;
 
-import jpabook.jpashop.domain.Member;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.domain.OrderSearch;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -19,9 +21,16 @@ public class OrderRepository {
 
     private final EntityManager em;
 
+//    private final JPAQueryFactory query;
+
+//    public OrderRepository(EntityManager em, JPAQueryFactory jpaQueryFactory ){
+//        this.em = em;
+//        this.query = jpaQueryFactory;
+//   }
     public void save(Order order){
         em.persist(order);
     }
+
     public Order findOne(Long id){
         return em.find(Order.class,id);
     }
@@ -81,5 +90,71 @@ public class OrderRepository {
         cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대1000건
         return query.getResultList();
+    }
+
+    public List<Order> findAll (OrderSearch orderSearch){
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        return query.select(order)
+                .from(order)
+                .join(order.member, member)
+                //.where(statusEq(orderSearch.getOrderStatus())) // 동적
+                //.where(order.status.eq(orderSearch.getOrderStatus())) // 정적
+                .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName())) // 동적
+                .limit(1000)
+                .fetch();
+    }
+
+    private BooleanExpression nameLike(String memberName) {
+        if(!StringUtils.hasText(memberName)) {
+            return null;
+        }
+        return QMember.member.name.like(memberName);
+    }
+
+    private BooleanExpression statusEq(OrderStatus statusCond){
+        if(statusCond == null){
+            return null;
+        }
+        return QOrder.order.status.eq(statusCond);
+    }
+
+    public List<Order> findAll() {
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        return query.select(order)
+                .from(order)
+                .join(order.member, member)
+                .limit(1000)
+                .fetch();
+    }
+
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery("select o from Order o" +
+                " join fetch o.member m " +
+                " join fetch o.delivery d " , Order.class).getResultList();
+               // " where o.status ='ORDER' "  , Order.class).getResultList();
+    }
+
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery("select o from Order o" +
+                " join fetch o.member m " +
+                " join fetch o.delivery d " , Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+        // " where o.status ='ORDER' "  , Order.class).getResultList();
+    }
+
+    //페이징 불가능...1대다를 조인하는순간 페이징을 할수 없다.(페이징에서는 절대 쓰지말것!!)
+    //Collectio fetch 조인은 하나만 써야된다.
+    public List<Order> findAllWithItem() {
+        return em.createQuery("select distinct o from Order o" +
+                " join fetch o.member m " +
+                " join fetch o.delivery d " +
+                " join fetch o.orderItems oi" +
+                " join fetch oi.item i",Order.class).getResultList();
     }
 }

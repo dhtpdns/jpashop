@@ -1,5 +1,7 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,6 +23,7 @@ public class OrderItem {
     @JoinColumn(name = "item_id")
     private Item item; //주문 상품
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order; //주문
@@ -30,7 +33,7 @@ public class OrderItem {
     private int count; //주문 수량
 
     //==비즈니스 로직==//
-    public static OrderItem creatOrderItem(Item item, int orderPrice, int count){
+    public static OrderItem createOrderItem(Item item, int orderPrice, int count){
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item);
         orderItem.setOrderPrice(orderPrice);
@@ -39,6 +42,8 @@ public class OrderItem {
         item.removeStock(count);
         return orderItem;
     }
+
+
     //==비즈니스 로직==//
     public void cancel() {
         getItem().addStock(count);

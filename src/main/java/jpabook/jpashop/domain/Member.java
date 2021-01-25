@@ -1,11 +1,14 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,10 +23,12 @@ public class Member {
     private Long id;
 
     @Column(unique = true)
+    @NotEmpty
     private String name;
     @Embedded
     private Address address;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
