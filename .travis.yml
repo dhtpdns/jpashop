@@ -22,15 +22,15 @@ before_install:
 script: "./gradlew clean build"
 
 before_deploy:
-  - zip -r jpashopp *
+  - zip -r jpashop *
   - mkdir -p deploy
-  - mv jpashopp.zip deploy/jpashopp.zip
+  - mv jpashop.zip deploy/jpashop.zip
 
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
     secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
-    bucket: jpashop-deploy # 6-3-3에서 생성한 S3 버킷
+    bucket: jpashop-deploay # 6-3-3에서 생성한 S3 버킷
     region: ap-northeast-2
     skip_cleanup: true
     acl: public_read
