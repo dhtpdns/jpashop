@@ -21,6 +21,11 @@ before_install:
 
 script: "./gradlew clean build"
 
+before_deploy:
+  - zip -r jpashopp *
+  - mkdir -p deploy
+  - mv jpashopp.zip deploy/jpashopp.zip
+  -
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
